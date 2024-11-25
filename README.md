@@ -121,12 +121,12 @@ You may find the Dear ImGui + svg2img example at `svg2img/example/main.cpp`.
 This directory also contains Make/CMake files for building it.
 See comments in the mentioned files for details.
 
-You may also use the Img2Svg Demo as a playground to test the browser's (and svg2img's) 
+You may also use the Svg2Img Demo as a playground to test the browser's (and svg2img's) 
 limitations with different SVG samples/output options.
 
-This is what Img2Svg Demo looks like:
+This is what Svg2Img Demo looks like:
 
-![Img2Svg Demo](/assets/demo.png)
+![Svg2Img Demo](/assets/demo.png)
 
 # Limitations
 
@@ -144,7 +144,7 @@ for details.
 # Pitfalls
 
 ***First***, as mentioned above, svg2img has browser-specific limitations.
-Familiarize yourself with them regarding your use case. Then, try the Img2Svg Demo 
+Familiarize yourself with them regarding your use case. Then, try the Svg2Img Demo 
 with browsers and output options you should support.
 
 ***Second***, consider that `raster::SvgToImage()` is an asynchronous function, so you should write
@@ -165,16 +165,19 @@ If your callback fails, svg2img does not guarantee that the allocated heap memor
 
 svg2img is a header-only library. You can include it in your project without special compile/link steps.
 
-If you are new to Emscripten or Dear ImGui, you may find helpful 
-the examples of Make/Cmake files placed in the `svg2img/example/` directory.
+If you are new to Emscripten or Dear ImGui, you may find helpful Make/Cmake files 
+placed in the `svg2img/example/` directory.
 
 CLion users may also want to look at the `CMakeLists.txt` comment section, 
 which describes the required steps for building Emscripten-powered applications from CLion.
 
 # Credits
 
-svg2img was inspired by helper libraries for Emscripten, published by 
-[Armchair Software](https://github.com/Armchair-Software), and developed by https://github.com/slowriot.
+svg2img was inspired by helper libraries for Emscripten published by
+[Armchair Software](https://github.com/Armchair-Software) and developed by https://github.com/slowriot.
+
+Dear ImGui usage example is based on decisions created by [Omar Cornut](https://github.com/ocornut) 
+and other contributors (if present). For details, see comments in `svg2img/example/main.cpp`.
 
 # License
 

@@ -18,10 +18,10 @@
 #    - Installation: https://emscripten.org/docs/getting_started/downloads.html
 # 2) Dear ImGui: Bloat-free Graphical User interface for C++ with minimal dependencies
 #    - Sources: https://github.com/ocornut/imgui
-#    - Installation: not needed; this Makefile will compile sources
+#    - Installation: not needed; this build file will compile sources
 # 3) stb: Single-file public domain libraries for C/C++
 #    - Sources: https://github.com/nothings/stb
-#    - Installation: not needed; this Makefile will compile sources
+#    - Installation: not needed; this build file will compile sources
 # *) We also need a GLFW, but Emscripten automatically links against it
 #	 if the sUSE_GLFW flag is set.
 #

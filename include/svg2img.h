@@ -18,7 +18,7 @@
 #include <string>
 #include <string_view>
 
-#include <emscripten/em_macros.h>
+#include "emscripten/em_macros.h"
 
 // ============================================================================
 // End-user api
