@@ -107,3 +107,10 @@ set_target_properties(svg2img PROPERTIES
         OUTPUT_NAME "index"
         SUFFIX ".html"
         RUNTIME_OUTPUT_DIRECTORY ../${BUILD_DIR})
+
+add_custom_target(create_build_dir)
+add_custom_command(TARGET create_build_dir
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E make_directory ${BUILD_DIR})
+
+add_dependencies(svg2img create_build_dir)

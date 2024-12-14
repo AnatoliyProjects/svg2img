@@ -63,16 +63,17 @@ namespace raster {
     // raster::SvgToImage() shows an alert message in the browser.
     using Callback = std::function<void(std::string_view img, Error err, void *meta)>;
 
-    // Converts svg to raster image via the browser (C++ facade).
+    // Asynchronously converts svg to raster image via the browser (C++ facade).
     // A client may specify metadata for the callback, output image format
     // ("image/png", "image/jpeg", "image/webp" - support depends on the browser),
     // output image quality (0.0f..1.0f), place of the output on the canvas (x, y),
-    // and the output image size (width, height - if changing, set both values).
+    // the output image size (width, height), and the output zoom.
     // Note that the output image buffer is deallocated after the callback returns.
     // Thus, you should copy the image data to use it further.
     inline void SvgToImage(std::string_view svg, Callback cb, void *meta = nullptr,
                            const std::string& format = "image/png", float quality = 1.0f,
-                           float x = 0.0f, float y = 0.0f, float width = 0.0f, float height = 0.0f);
+                           float x = 0.0f, float y = 0.0f, float width = 0.0f, float height = 0.0f,
+                           float zoom = 1.0f);
 
     // Helpers
 
@@ -125,7 +126,8 @@ namespace raster::aux {
     // Converts svg to raster image via the browser (JS implementation).
     EM_JS_INLINE(void, SvgToImage, (const char* data, std::size_t size, PCallback pcb,
                                     void* meta, const char* format, float quality,
-                                    float x, float y, float width, float height), {
+                                    float x, float y, float width, float height,
+                                    float zoom), {
         // -------------------------------------------------------------------
         // Constants
         // -------------------------------------------------------------------
@@ -168,24 +170,17 @@ namespace raster::aux {
             // We should explicitly set <canvas> width/height.
             // Otherwise, default values will be applied (w=300, h=150).
             // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas
-            setCanvasSize(canvas, width, height, img);
+            if (width == 0) { width = img.width }
+            if (height == 0) { height = img.height }
+            width *= zoom;
+            height *= zoom;
+            canvas.width = width;
+            canvas.height = height;
             let context = canvas.getContext("2d");
             try {
-                if (width && height) { context.drawImage(img, x, y, width, height); }
-                else { context.drawImage(img, x, y); }
+                context.drawImage(img, x, y, width, height);
                 canvas.toBlob(processBlob, fmt, quality);
             } catch (e) { failed(RasterError.CanvasDrawingFailed); }
-        }
-
-        // Sets <canvas> width/height considering the input arguments or image size.
-        function setCanvasSize(canvas, w, h, img) {
-            if (width && height) {
-                canvas.width = w;
-                canvas.height = h;
-            } else {
-                canvas.width = img.width;
-                canvas.height = img.height;
-            }
         }
 
         // Processes the <canvas> blob.
@@ -250,7 +245,9 @@ namespace raster {
     inline void SvgToImage(const std::string_view svg, Callback cb, void *meta,
                            const std::string& format, const float quality,
                            const float x, const float y,
-                           const float width, const float height) {
+                           const float width, const float height, const float zoom) {
+        assert(width >= 0 and height >= 0 and zoom > 0
+               && "Wrong arguments [raster::SvgToImage()]");
         if (svg.empty() or svg[0] == '\0') {
             cb(std::string_view(), Error::NoInputData, meta);
             return;
@@ -258,7 +255,7 @@ namespace raster {
         // svg not empty
         aux::PCallback pcb = new Callback(std::move(cb));
         aux::SvgToImage(svg.data(), svg.size(), pcb, meta, format.c_str(),
-                        quality, x, y, width, height);
+                        quality, x, y, width, height, zoom);
     }
 
     inline const char *ToCStr(const Error err) {

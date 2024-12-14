@@ -84,7 +84,7 @@ void Cb(std::string_view img, raster::Error err, void * meta) {
 void ConvertToPng(std::string_view svg) {
     // You may choose the other output format ("image/jpeg" or "image/webp").
     // You may also specify the output image quality, image position on the canvas (x, y args),
-    // and image size (width, height args).
+    // image size (width, height args), and zoom.
     raster::SvgToImage(svg, Cb, const_cast<char*>(msg), "image/png");
 }
 

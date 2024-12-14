@@ -56,8 +56,9 @@ void Svg2ImgDemo() {
     static char text[buf_size]{};
     static const char *all_formats[3] = {"image/png", "image/jpeg", "image/webp"};
     static int format_idx = 0;
-    static float quality = 1.0f, x = 0.0f, y = 0.0f, width = 0.0f, height = 0.0f;
-    static float out_width = 0.0f, out_height = 0.0f;
+    static float quality = 1.0f, x = 0.0f, y = 0.0f, width = 0.0f, height = 0.0f,
+                 zoom = 1.0f;
+    static float out_width = 0.0f, out_height = 0.0;
     static size_t out_size = 0;
     static const char *out_err = "RasterError::None";
     static std::string out_img;
@@ -78,7 +79,7 @@ void Svg2ImgDemo() {
     // Resets options to default values.
     static auto reset_opts = [] {
         format_idx = 0;
-        quality = 1.0f, x = 0.0f, y = 0.0f, width = 0.0f, height = 0.0f;
+        quality = 1.0f, x = 0.0f, y = 0.0f, width = 0.0f, height = 0.0f, zoom = 0.0f;
     };
 
     // Callback for the raster::SvgToImage().
@@ -120,7 +121,7 @@ void Svg2ImgDemo() {
         if (ImGui::Button("Convert to img")) {
             clear_image();
             raster::SvgToImage({text}, cb, nullptr, all_formats[format_idx],
-                               quality, x, y, width, height);
+                               quality, x, y, width, height, zoom);
         }
         ImGui::SameLine();
         if (ImGui::Button("Clear text")) { memset(text, 0, buf_size); }
@@ -149,6 +150,7 @@ void Svg2ImgDemo() {
         ImGui::InputFloat("y", &y, 10);
         ImGui::InputFloat("width", &width, 10);
         ImGui::InputFloat("height", &height, 10);
+        ImGui::InputFloat("zoom", &zoom, 0.25);
 
         // Pop spacing
         ImGui::PopStyleVar();
